@@ -1,0 +1,7 @@
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\bin\Debug\locbaml.exe
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\bin\Debug\locbaml.pdb
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\obj\x86\Debug\locbaml.csprojResolveAssemblyReference.cache
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\obj\x86\Debug\BamlLocalization.StringTable.resources
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\obj\x86\Debug\locbaml.csproj.GenerateResource.Cache
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\obj\x86\Debug\locbaml.exe
+E:\Programmiersprachen\C_Sharp\locBAML\locbaml\obj\x86\Debug\locbaml.pdb
