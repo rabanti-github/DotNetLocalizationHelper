@@ -26,7 +26,7 @@ namespace BamlLocalization
         /// default well-known WPF assemblies. The assemblies will be searched first
         /// in order before the well-known WPF assemblies.
         /// </summary>
-        /// <param name="assemblies">additinal list of assemblies to search for Type information</param>
+        /// <param name="assemblies">additional list of assemblies to search for Type information</param>
         public BamlLocalizabilityByReflection(params Assembly[] assemblies)
         {
             if (assemblies != null)
@@ -74,7 +74,7 @@ namespace BamlLocalization
             Type type = GetType(assembly, className);            
             if (type != null)
             {
-                // We found the type, now try to get the localizability attribte from the type
+                // We found the type, now try to get the localizability attribute from the type
                 loc.Attribute = GetLocalizabilityFromType(type);
             }            
             
@@ -277,7 +277,7 @@ namespace BamlLocalization
                 if (_wellKnownAssemblies[i] != null)
                 {
                     // create an assembly name with the same version and token info
-                    // as the WPF assembilies
+                    // as the WPF assemblies
                     asmName = _wellKnownAssemblies[i].GetName();
                     asmName.Name = shortName;
                     break;

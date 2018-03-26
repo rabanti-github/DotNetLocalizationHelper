@@ -36,7 +36,7 @@ namespace BamlLocalization
                 }
                 default:
                 {
-                    Debug.Assert(false, "Un supported FileType");
+                    Debug.Assert(false, "Unsupported FileType");
                     delimiter = ','; 
                     break;
                 }

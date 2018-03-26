@@ -10,10 +10,7 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Resources;
 using System.Collections;
-using System.Globalization;
-using System.Diagnostics;
 
 namespace BamlLocalization
 {
@@ -56,7 +53,7 @@ namespace BamlLocalization
                     {
                         if (currentChar == _delimiter)
                         {
-                            // it is the end of the token when we see a delimeter
+                            // it is the end of the token when we see a delimiter
                             // Store token, and reset state. and ignore this char
                             StoreTokenAndResetState(ref buffer, ref currentState);
                         }
@@ -87,16 +84,16 @@ namespace BamlLocalization
                     {
                         if (currentChar == _delimiter)
                         {
-                            // It is then end of a toekn.
+                            // It is then end of a token.
                             // Store the token value and reset state
-                            // igore this char as well
+                            // ignore this char as well
                             StoreTokenAndResetState(ref buffer, ref currentState);
                         }
                         else if (currentChar == '\n' ||
                                 (currentChar == '\r' && _reader.Peek() == '\n'))
                         {
                             // see a new line
-                            // igorne these chars and jump to LineEnd
+                            // ignore these chars and jump to LineEnd
                             currentState = ReadState.LineEnd;
                         }
                         else
@@ -124,7 +121,7 @@ namespace BamlLocalization
                             }
                             else 
                             {   // we have a single quote. We fall back to unquoted content state
-                                // and igorne the curernt quote
+                                // and ignore the current quote
                                 currentState = ReadState.UnQuotedContent;
                             }                            
                         }
@@ -192,7 +189,7 @@ namespace BamlLocalization
             // create a new buffer for the next token.
             buffer = new StringBuilder();
 
-            // we continue to token state state
+            // we continue to token state
             currentState = ReadState.TokenStart;
         }
 
@@ -227,7 +224,7 @@ namespace BamlLocalization
 
         private TextReader _reader;     // internal text reader
         private int        _delimiter;  // delimiter
-        private ArrayList  _columns;    // An arraylist storing all the columns of a row
+        private ArrayList  _columns;    // An array list storing all the columns of a row
 
         /// <summary>
         /// Enum representing internal states of the reader when reading 

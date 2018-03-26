@@ -10,10 +10,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Resources;
-using System.Collections;
-using System.Globalization;
-using System.Diagnostics;
 
 namespace BamlLocalization
 {    
@@ -48,7 +44,7 @@ namespace BamlLocalization
             if (value == null)
                     value = string.Empty;
 
-            // if it contains delimeter, quote, newline, we need to escape them
+            // if it contains delimiter, quote, newline, we need to escape them
             if (value.IndexOfAny(new char[]{'\"', '\r', '\n', _delimiter}) >= 0)
             {
                 // make a string builder at the minimum required length;
@@ -74,8 +70,8 @@ namespace BamlLocalization
 
             if (!_firstColumn)
             {
-                // if we are not the first column, we write delimeter
-                // to seperate the new cell from the previous ones.
+                // if we are not the first column, we write delimiter
+                // to separate the new cell from the previous ones.
                 _writer.Write(_delimiter);                
             }
             else

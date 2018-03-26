@@ -8,16 +8,13 @@
 //---------------------------------------------------------------------------
 using System;
 using System.IO;
-using System.Windows;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Collections;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Diagnostics;
 using System.Resources;
-using System.Threading; 
-using System.Windows.Threading;
+using System.Threading;
 using System.Windows.Markup.Localizer;
 
 namespace BamlLocalization
@@ -42,7 +39,7 @@ namespace BamlLocalization
                     // input file name
                     string bamlName = Path.GetFileName(options.Input);
 
-                    // outpuf file name is Output dir + input file name
+                    // output file name is output dir + input file name
                     string outputFileName = GetOutputFileName(options);                    
 
                     // construct the full path
@@ -272,7 +269,7 @@ namespace BamlLocalization
             string sourceAssemblyFullName   = options.Input;                // source assembly full path 
             string outputAssemblyDir        = options.Output;               // output assembly directory
             string outputAssemblyLocalName  = GetOutputFileName(options);   // output assembly name
-            string moduleLocalName          = GetAssemblyModuleLocalName(options, outputAssemblyLocalName); // the module name within the assmbly
+            string moduleLocalName          = GetAssemblyModuleLocalName(options, outputAssemblyLocalName); // the module name within the assembly
                 
             // get the source assembly
             Assembly srcAsm = Assembly.LoadFrom(sourceAssemblyFullName);
@@ -294,7 +291,7 @@ namespace BamlLocalization
                 outputAssemblyDir                       // storage dir
                 );            
 
-            // we create a module builder for embeded resource modules
+            // we create a module builder for embedded resource modules
             ModuleBuilder moduleBuilder = targetAssemblyBuilder.DefineDynamicModule(
                 moduleLocalName,
                 outputAssemblyLocalName
@@ -308,7 +305,7 @@ namespace BamlLocalization
                 // get the resource location for the resource
                 ResourceLocation resourceLocation = srcAsm.GetManifestResourceInfo(resourceName).ResourceLocation;
                                
-                // if this resource is in another assemlby, we will skip it
+                // if this resource is in another assembly, we will skip it
                 if ((resourceLocation & ResourceLocation.ContainedInAnotherAssembly) != 0)
                 {
                     continue;   // in resource assembly, we don't have resource that is contained in another assembly
@@ -329,14 +326,14 @@ namespace BamlLocalization
                     // now we think we have resource stream 
                     // get the resource writer
                     IResourceWriter writer;
-                    // check if it is a embeded assembly
+                    // check if it is a embedded assembly
                     if ((resourceLocation & ResourceLocation.Embedded) != 0)
                     {
                         // gets the resource writer from the module builder
                         writer = moduleBuilder.DefineResource(
                             targetResourceName,         // resource name
                             targetResourceName,         // resource description
-                            ResourceAttributes.Public   // visibilty of this resource to other assembly
+                            ResourceAttributes.Public   // visibility of this resource to other assembly
                             );
                     }                                
                     else
@@ -369,7 +366,7 @@ namespace BamlLocalization
                     // check if it is a .baml, case-insensitive
                     if (string.Compare(extension, ".baml", true, CultureInfo.InvariantCulture) == 0)
                     {
-                        // try to localized the the baml
+                        // try to localized the baml
                         // find the resource dictionary
                         BamlLocalizationDictionary dictionary = dictionaries[resourceName];
 
@@ -443,7 +440,7 @@ namespace BamlLocalization
                     // get the output file name
                     outputFileName        = inputFileName;
                     
-                    // get to the last dot seperating filename and extension
+                    // get to the last dot separating filename and extension
                     int lastDot = outputFileName.LastIndexOf('.');   
                     int secondLastDot = outputFileName.LastIndexOf('.', lastDot - 1);
                     if (secondLastDot > 0)

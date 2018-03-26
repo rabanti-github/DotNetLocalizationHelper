@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using Microsoft.Win32;
 
 namespace locbamlUI
 {
@@ -20,9 +9,29 @@ namespace locbamlUI
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private LocBamlHandler handler;
+
         public MainWindow()
         {
             InitializeComponent();
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(LocBamlHandler.ResolveAssembly); // register AssemblyResolver event for bamlLocalizer
+        }
+
+        private void loadDLLButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Select resource DLL";
+            ofd.DefaultExt = "dll";
+            ofd.Filter = "DLL files|*.dll|All files|*.*";
+            ofd.Multiselect = false;
+            bool? result = ofd.ShowDialog();
+            if (result == true)
+            {
+                this.dllPathField.Text = ofd.FileName;
+                this.handler = new LocBamlHandler(ofd.FileName);
+                this.handler.Load();
+            }
         }
     }
 }

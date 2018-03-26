@@ -8,11 +8,6 @@
 
 
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Collections;
 using System.Globalization;
 
 namespace BamlLocalization 

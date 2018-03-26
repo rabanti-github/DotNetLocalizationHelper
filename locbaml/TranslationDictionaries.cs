@@ -8,11 +8,8 @@
 
 using System;
 using System.IO;
-using System.Resources;
 using System.Collections;
-using System.Globalization;
 using System.Windows;
-using System.Diagnostics;
 using System.ComponentModel;
 using System.Windows.Markup.Localizer;
 
@@ -23,88 +20,103 @@ namespace BamlLocalization
     /// </summary>
     internal static class  TranslationDictionariesWriter
     {
+
         /// <summary>
-        /// Write the localizable key-value pairs
+        /// Write the localizable key-value pairs to a file
         /// </summary>
-        /// <param name="options"></param>
-        internal static void Write(LocBamlOptions options)            
-        {   
-            Stream output = new FileStream(options.Output, FileMode.Create);
-            InputBamlStreamList bamlStreamList = new InputBamlStreamList(options);
-
-            using (ResourceTextWriter writer = new ResourceTextWriter(options.TranslationFileType, output))
+        /// <param name="options">locbaml options</param>
+        internal static void Write(LocBamlOptions options)
+        {
+            try
             {
-                options.WriteLine(StringLoader.Get("WriteBamlValues"));
-                for (int i = 0; i < bamlStreamList.Count; i++)
+                using (FileStream fs = new FileStream(options.Output, FileMode.Create))
                 {
-                    options.Write("    ");
-                    options.Write(StringLoader.Get("ProcessingBaml", bamlStreamList[i].Name));
-
-                    // Search for comment file in the same directory. The comment file has the extension to be 
-                    // "loc".
-                    string commentFile = Path.ChangeExtension(bamlStreamList[i].Name, "loc");
-                    TextReader commentStream = null;
-
-                    try
-                    {
-                        if (File.Exists(commentFile))
-                        {
-                            commentStream = new StreamReader(commentFile);
-                        }
-
-                        // create the baml localizer
-                        BamlLocalizer mgr = new BamlLocalizer(
-                            bamlStreamList[i].Stream,
-                            new BamlLocalizabilityByReflection(options.Assemblies),
-                            commentStream
-                            );
-
-                        // extract localizable resource from the baml stream
-                        BamlLocalizationDictionary dict = mgr.ExtractResources();
-
-                        // write out each resource
-                        foreach (DictionaryEntry entry in dict)
-                        {
-                            // column 1: baml stream name
-                            writer.WriteColumn(bamlStreamList[i].Name);
-                            
-                            BamlLocalizableResourceKey key = (BamlLocalizableResourceKey) entry.Key;
-                            BamlLocalizableResource resource = (BamlLocalizableResource)entry.Value;
-
-                            // column 2: localizable resource key
-                            writer.WriteColumn(LocBamlConst.ResourceKeyToString(key));
-
-                            // column 3: localizable resource's category
-                            writer.WriteColumn(resource.Category.ToString());
-
-                            // column 4: localizable resource's readability
-                            writer.WriteColumn(resource.Readable.ToString());
-
-                            // column 5: localizable resource's modifiability
-                            writer.WriteColumn(resource.Modifiable.ToString());
-
-                            // column 6: localizable resource's localization comments
-                            writer.WriteColumn(resource.Comments);
-
-                            // column 7: localizable resource's content
-                            writer.WriteColumn(resource.Content);
-
-                            // Done. finishing the line
-                            writer.EndLine();
-                        }
-
-                        options.WriteLine(StringLoader.Get("Done"));
-                    }
-                    finally
-                    {
-                        if (commentStream != null)
-                            commentStream.Close();
-                    }
+                    Write(options, fs);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// Write the localizable key-value pairs to a stream
+        /// </summary>
+        /// <param name="options">locbaml options</param>
+        /// <param name="output">Stream to be used. The position of the stream will be set to 0 at the end of the write process</param>
+        public static void Write(LocBamlOptions options, Stream output)            
+        {   
+            InputBamlStreamList bamlStreamList = new InputBamlStreamList(options);
+            ResourceTextWriter writer = new ResourceTextWriter(options.TranslationFileType, output);
+            options.WriteLine(StringLoader.Get("WriteBamlValues"));
+            for (int i = 0; i < bamlStreamList.Count; i++)
+            {
+                options.Write("    ");
+                options.Write(StringLoader.Get("ProcessingBaml", bamlStreamList[i].Name));
+
+                // Search for comment file in the same directory. The comment file has the extension to be 
+                // "loc".
+                string commentFile = Path.ChangeExtension(bamlStreamList[i].Name, "loc");
+                TextReader commentStream = null;
+
+                try
+                {
+                    if (File.Exists(commentFile))
+                    {
+                        commentStream = new StreamReader(commentFile);
+                    }
+                    // create the baml localizer
+                    BamlLocalizer mgr = new BamlLocalizer(bamlStreamList[i].Stream, new BamlLocalizabilityByReflection(options.Assemblies),commentStream );
+
+                    // extract localizable resource from the baml stream
+                    BamlLocalizationDictionary dict = mgr.ExtractResources();
+
+                    // write out each resource
+                    foreach (DictionaryEntry entry in dict)
+                    {
+                        // column 1: baml stream name
+                        writer.WriteColumn(bamlStreamList[i].Name);
+                            
+                        BamlLocalizableResourceKey key = (BamlLocalizableResourceKey) entry.Key;
+                        BamlLocalizableResource resource = (BamlLocalizableResource)entry.Value;
+
+                        // column 2: localizable resource key
+                        writer.WriteColumn(LocBamlConst.ResourceKeyToString(key));
+
+                        // column 3: localizable resource's category
+                        writer.WriteColumn(resource.Category.ToString());
+
+                        // column 4: localizable resource's readability
+                        writer.WriteColumn(resource.Readable.ToString());
+
+                        // column 5: localizable resource's modifiability
+                        writer.WriteColumn(resource.Modifiable.ToString());
+
+                        // column 6: localizable resource's localization comments
+                        writer.WriteColumn(resource.Comments);
+
+                        // column 7: localizable resource's content
+                        writer.WriteColumn(resource.Content);
+
+                        // Done. finishing the line
+                        writer.EndLine();
+                    }
+
+                    options.WriteLine(StringLoader.Get("Done"));
+                }
+                finally
+                {
+                    if (commentStream != null)
+                        commentStream.Close();
+                }
+            }
                 
-                // close all the baml input streams, output stream is closed by writer.
-                bamlStreamList.Close();            
-            }   
+            // close all the baml input streams, output stream is closed by writer.
+            bamlStreamList.Close();
+            output.Position = 0; // Reset for writing
         }
     }
 
@@ -117,7 +129,7 @@ namespace BamlLocalization
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="reader">resoure text reader that reads CSV or a tab-separated txt file</param>
+        /// <param name="reader">resource text reader that reads CSV or a tab-separated txt file</param>
         internal TranslationDictionariesReader(ResourceTextReader reader)
         {
             if (reader == null)
