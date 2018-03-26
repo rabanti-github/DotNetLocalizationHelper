@@ -1,10 +1,22 @@
-﻿<Window x:Class="locbamlUI.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:BamlLocalization="clr-namespace:BamlLocalization;assembly=locbaml" xmlns:local="clr-namespace:locbamlUI" x:Class="locbamlUI.MainWindow"
         Title="MainWindow" Height="231" Width="377" MinWidth="350" MinHeight="200">
     <Grid>
-        <Button x:Name="loadDLLButton" Content="Load DLL" Margin="0,10,10,0" VerticalAlignment="Top" Width="75" HorizontalAlignment="Right" Click="loadDLLButton_Click"/>
-        <TextBox x:Name="dllPathField" Height="23" Margin="10,9,95,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnlyCaretVisible="True" IsReadOnly="True"/>
+        <Button x:Name="loadDLLButton" Content="Load Resource" Margin="0,10,10,0" VerticalAlignment="Top" Width="98" HorizontalAlignment="Right" Click="loadDLLButton_Click"/>
+        <TextBox x:Name="dllPathField" Height="23" Margin="10,9,113,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnlyCaretVisible="True" IsReadOnly="True"/>
+        <DataGrid ItemsSource="{Binding Path=LocalizationList}" x:Name="bamlDataGrid" Margin="10,37,10,10" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Path=StreamName}" ClipboardContentBinding="{x:Null}" Header="Stream name"/>
+                <DataGridTextColumn Binding="{Binding Path=ResourceKey}" ClipboardContentBinding="{x:Null}" Header="Resource key"/>
+                <DataGridTextColumn Binding="{Binding Path=ResourceCategory}" ClipboardContentBinding="{x:Null}" Header="Resource category"/>
+                <DataGridCheckBoxColumn Binding="{Binding Path=IsReadable}" ClipboardContentBinding="{x:Null}" Header="Can be read"/>
+                <DataGridCheckBoxColumn Binding="{Binding Path=IsModifieable}" ClipboardContentBinding="{x:Null}" Header="Can be modified"/>
+                <DataGridTextColumn Binding="{Binding Path=Comment}" ClipboardContentBinding="{x:Null}" Header="Comment"/>
+                <DataGridTextColumn Binding="{Binding Path=Content}" ClipboardContentBinding="{x:Null}" Header="Content"/>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </Window>
