@@ -65,7 +65,12 @@ namespace BamlLocalization
                 }
                 else if (options.ToParseAsStream)
                 {
-                    Stream ms = ParseBamlResourcesAsSteram(options);
+                    string error;
+                    Stream ms = ParseBamlResourcesAsSteram(options, out error);
+                    if (string.IsNullOrEmpty(error) == false)
+                    {
+                        throw new Exception(error);
+                    }
                 }
                 else
                 {
@@ -99,11 +104,21 @@ namespace BamlLocalization
             TranslationDictionariesWriter.Write(options);         
         }
 
-        public static Stream ParseBamlResourcesAsSteram(LocBamlOptions options)
+        public static Stream ParseBamlResourcesAsSteram(LocBamlOptions options, out string status)
         {
-           MemoryStream ms = new MemoryStream();
-           TranslationDictionariesWriter.Write(options, ms);
-           return ms;
+            try
+            {
+                status = null;
+                MemoryStream ms = new MemoryStream();
+                TranslationDictionariesWriter.Write(options, ms);
+                return ms;
+            }
+            catch (Exception e)
+            {
+                status = e.Message;
+                return null;
+            }
+
         }
 
 

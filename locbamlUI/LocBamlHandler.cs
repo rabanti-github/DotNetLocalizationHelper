@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
+using System.Windows;
 using BamlLocalization;
 
 namespace locbamlUI
@@ -37,35 +39,42 @@ namespace locbamlUI
             Load();
         }
 
-        public void Load()
+        public bool Load()
         {
             LocBamlOptions options = new LocBamlOptions();
             options.Input = this.Path;
             options.ToParseAsStream = true;
             options.Output = "res.txt"; // Transient
             string errors = options.CheckAndSetDefault();
+            if (string.IsNullOrEmpty(errors) == false)
+            {
+                CurrentViewModel.Status = errors;
+                MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
 
-            Stream stream = LocBaml.ParseBamlResourcesAsSteram(options);
+            Stream stream = LocBaml.ParseBamlResourcesAsSteram(options, out errors);
+            if (string.IsNullOrEmpty(errors) == false)
+            {
+                CurrentViewModel.Status = errors;
+                MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
 
-            SetTable(stream, '\t');
-            // Test
-            /*
-            FileStream fs = new FileStream("test.csv", FileMode.Create);
-            stream.CopyTo(fs);
-            fs.Flush();
-            fs.Close();
-             * */
-            
-
+            SetTable((MemoryStream)stream, '\t');
+            return true;
         }
 
-        private void SetTable(Stream input, char cellDelimeiter)
+        private void SetTable(MemoryStream input, char cellDelimeiter)
         {
             this.CurrentViewModel.LocalizationList.Clear();
             LocalizationItem item;
-            StreamReader sr = new StreamReader(input);
-            string text = sr.ReadToEnd();
-            sr.Close();
+            string text = "";
+            using (StreamReader sr = new StreamReader(input))
+            {
+                text = sr.ReadToEnd();
+            }
+            input.Close();
             string[] cells;
             string[] lines = text.Split(new char[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries);
             char[] delimiters = new char[]{ cellDelimeiter };
@@ -118,6 +127,7 @@ namespace locbamlUI
                 this.CurrentViewModel.LocalizationList.Add(item);
             }
             this.CurrentViewModel.UpdateList();
+            this.CurrentViewModel.Status = "Resource was loaded";
         }
 
     }

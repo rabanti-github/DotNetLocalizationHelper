@@ -12,6 +12,7 @@ namespace locbamlUI
     public class ViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<LocalizationItem> localizationList;
+        private string status;
 
         public ObservableCollection<LocalizationItem> LocalizationList
         {
@@ -20,6 +21,16 @@ namespace locbamlUI
             {
                 localizationList = value;
                 NotifyPropertyChanged("LocalizationList");
+            }
+        }
+
+        public string Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                NotifyPropertyChanged("Status");
             }
         }
 
@@ -32,6 +43,7 @@ namespace locbamlUI
         public ViewModel()
         {
             LocalizationList = new ObservableCollection<LocalizationItem>();
+            this.Status = "ready...";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

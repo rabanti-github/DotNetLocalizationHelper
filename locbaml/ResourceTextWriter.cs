@@ -90,10 +90,20 @@ namespace BamlLocalization
             // set first column to true    
             _firstColumn = true;
         }
+
+        /// <summary>
+        /// Clears the buffer of the writer. If not called before closing the stream, text can be truncated
+        /// </summary>
+        internal void Flush()
+        {
+            _writer.Flush();
+        }
+
         internal void Close()
         {
             if (_writer != null)
             {
+                Flush(); // If not called before
                 _writer.Close();
             }
         }

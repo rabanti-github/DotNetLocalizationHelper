@@ -34,8 +34,8 @@ namespace locbamlUI
                 this.dllPathField.Text = ofd.FileName;
                 this.handler = new LocBamlHandler(ofd.FileName, CurrentModel);
                 //this.DataContext = this.handler.CurrentViewModel;
-                this.handler.Load();
-
+                bool state = this.handler.Load();
+                this.bamlDataGrid.IsEnabled = state;
             }
         }
     }

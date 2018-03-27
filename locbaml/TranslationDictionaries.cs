@@ -36,7 +36,7 @@ namespace BamlLocalization
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine("ERROR: "+e);
                 throw;
             }
 
@@ -68,8 +68,10 @@ namespace BamlLocalization
                     {
                         commentStream = new StreamReader(commentFile);
                     }
+
                     // create the baml localizer
-                    BamlLocalizer mgr = new BamlLocalizer(bamlStreamList[i].Stream, new BamlLocalizabilityByReflection(options.Assemblies),commentStream );
+                    BamlLocalizer mgr = new BamlLocalizer(bamlStreamList[i].Stream,
+                        new BamlLocalizabilityByReflection(options.Assemblies), commentStream);
 
                     // extract localizable resource from the baml stream
                     BamlLocalizationDictionary dict = mgr.ExtractResources();
@@ -79,9 +81,9 @@ namespace BamlLocalization
                     {
                         // column 1: baml stream name
                         writer.WriteColumn(bamlStreamList[i].Name);
-                            
+
                         BamlLocalizableResourceKey key = (BamlLocalizableResourceKey) entry.Key;
-                        BamlLocalizableResource resource = (BamlLocalizableResource)entry.Value;
+                        BamlLocalizableResource resource = (BamlLocalizableResource) entry.Value;
 
                         // column 2: localizable resource key
                         writer.WriteColumn(LocBamlConst.ResourceKeyToString(key));
@@ -103,9 +105,16 @@ namespace BamlLocalization
 
                         // Done. finishing the line
                         writer.EndLine();
+                        
                     }
 
                     options.WriteLine(StringLoader.Get("Done"));
+                    writer.Flush();
+                    //output.Flush();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERROR: " + e);
                 }
                 finally
                 {
