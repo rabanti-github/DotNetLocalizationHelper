@@ -13,6 +13,17 @@ namespace locbamlUI
     {
         private ObservableCollection<LocalizationItem> localizationList;
         private string status;
+        private bool loaded;
+
+        public bool Loaded
+        {
+            get { return loaded; }
+            set
+            {
+                loaded = value;
+                NotifyPropertyChanged("Loaded");
+            }
+        }
 
         public ObservableCollection<LocalizationItem> LocalizationList
         {

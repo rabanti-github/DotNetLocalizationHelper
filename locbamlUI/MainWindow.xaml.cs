@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net.Mail;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -24,7 +26,7 @@ namespace locbamlUI
         private void loadDLLButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Title = "Select file with localization content...";
+            ofd.Title = "Select file with resource content...";
             ofd.DefaultExt = "dll";
             ofd.Filter = "Dynamic link libraries|*.dll|Executables|*.exe|Resource files|*.resources|BAML files|*.baml|All files|*.*";
             ofd.Multiselect = false;
@@ -36,6 +38,39 @@ namespace locbamlUI
                 //this.DataContext = this.handler.CurrentViewModel;
                 bool state = this.handler.Load();
                 this.bamlDataGrid.IsEnabled = state;
+            }
+        }
+
+        private void exportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Export resources as...";
+            sfd.DefaultExt = "xlsx";
+            sfd.Filter = "Excel Worksheet|*.xlsx|CSV file|*.csv";
+            bool? result = sfd.ShowDialog();
+            if (result == true)
+            {
+                FileInfo fi = new FileInfo(sfd.FileName);
+                string error = null;
+                if (fi.Extension.ToLower() == ".xlsx")
+                {
+                    error = LocalizationItem.ExportAsXlsx(sfd.FileName, this.CurrentModel.LocalizationList);
+                }
+                else if (fi.Extension.ToLower() == ".csv")
+                {
+                    error = LocalizationItem.ExportAsCsv(sfd.FileName, this.CurrentModel.LocalizationList);
+                }
+
+                if (error != null)
+                {
+                    this.CurrentModel.Status = error;
+                    MessageBox.Show("The resources could not be exported:\n"+error, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    this.CurrentModel.Status = "The resources were exported successfully";
+                    MessageBox.Show("The resources were exported successfully", "Export", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
     }

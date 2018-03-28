@@ -20,7 +20,17 @@
                 <DataGridTextColumn Binding="{Binding Path=Content}" ClipboardContentBinding="{x:Null}" Header="Content"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Menu Height="30" VerticalAlignment="Top"/>
+        <Menu Height="30" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Load Resources"/>
+                <MenuItem Header="Save Resources as..." IsEnabled="{Binding Path=Loaded}"/>
+                <Separator/>
+                <MenuItem x:Name="importMenuItem" Header="Import Resources"/>
+                <MenuItem x:Name="exportMenuItem" Header="Export Resources" Click="exportMenuItem_Click" IsEnabled="{Binding Path=Loaded}"/>
+            </MenuItem>
+            <MenuItem Header="Filter">
+            </MenuItem>
+        </Menu>
         <StatusBar Height="30" Margin="0" VerticalAlignment="Bottom" VerticalContentAlignment="Center">
             <Label Content="{Binding Path=Status}" Padding="10,1,5,1" VerticalContentAlignment="Stretch"/>
         </StatusBar>

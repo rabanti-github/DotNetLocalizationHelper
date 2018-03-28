@@ -9,6 +9,7 @@ namespace locbamlUI
 {
     public class LocBamlHandler
     {
+
         private static string CurrentAssembly;
         public static Assembly ResolveAssembly(object sender, ResolveEventArgs e)
         {
@@ -48,6 +49,7 @@ namespace locbamlUI
             string errors = options.CheckAndSetDefault();
             if (string.IsNullOrEmpty(errors) == false)
             {
+                CurrentViewModel.Loaded = false;
                 CurrentViewModel.Status = errors;
                 MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
@@ -56,11 +58,13 @@ namespace locbamlUI
             Stream stream = LocBaml.ParseBamlResourcesAsSteram(options, out errors);
             if (string.IsNullOrEmpty(errors) == false)
             {
+                CurrentViewModel.Loaded = false;
                 CurrentViewModel.Status = errors;
                 MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
 
+            CurrentViewModel.Loaded = true;
             SetTable((MemoryStream)stream, '\t');
             return true;
         }

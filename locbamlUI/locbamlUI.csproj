@@ -34,8 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Csv, Version=1.0.29.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Csv.1.0.29\lib\net40\Csv.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DataGridFilterLibrary, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DataGridFilter.1.0.3\lib\DataGridFilterLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PicoXLSX, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PicoXLSX.2.3.1\lib\net45\PicoXLSX.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
