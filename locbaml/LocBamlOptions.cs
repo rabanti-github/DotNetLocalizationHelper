@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Security;
-using System.Xml.Serialization;
 
 namespace BamlLocalization
 {
