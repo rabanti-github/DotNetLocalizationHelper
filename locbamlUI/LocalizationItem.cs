@@ -60,7 +60,7 @@ namespace locbamlUI
             set { content = value; }
         }
 
-        public static string ExportAsCsv(string fileName, IList<LocalizationItem> items)
+        public static string ExportAsStream(IList<LocalizationItem> items, bool writeHeader, Stream stream, bool closeStream)
         {
             string[] line;
             List<string[]> lines = new List<string[]>();
@@ -77,44 +77,69 @@ namespace locbamlUI
                 lines.Add(line);
             }
             string[] header = new string[7];
-            header[0] = "Stream name";
-            header[1] = "Resource key";
-            header[2] = "Resource Category";
-            header[3] = "Can be read";
-            header[4] = "Can be modified";
-            header[5] = "Comment";
-            header[6] = "Value";
+            if (writeHeader == true)
+            {
+                header[0] = "Stream name";
+                header[1] = "Resource key";
+                header[2] = "Resource Category";
+                header[3] = "Can be read";
+                header[4] = "Can be modified";
+                header[5] = "Comment";
+                header[6] = "Value";
+            }
+            else
+            {
+                header = lines[0];
+                lines.RemoveAt(0);
+            }
+
             try
             {
-                string csv = CsvWriter.WriteToText(header, lines);
-                using (StreamWriter sw = new StreamWriter(fileName))
+                string csv = CsvWriter.WriteToText(header, lines, Properties.Settings.Default.ExportCsvDelimiter[0]);
+                StreamWriter sw = new StreamWriter(stream);
+                sw.Write(csv);
+                sw.Flush();
+                if (closeStream == true)
                 {
-                    sw.Write(csv);
-                    sw.Flush();
+                    sw.Close();
                 }
-
+                else
+                {
+                    stream.Position = 0;
+                }
                 return null;
             }
             catch (Exception e)
             {
                 return e.Message;
             }
+        }
 
+
+        public static string ExportAsCsv(string fileName, IList<LocalizationItem> items)
+        {
+            using (FileStream fs = new FileStream(fileName, FileMode.Create))
+            {
+                return ExportAsStream(items, Properties.Settings.Default.ExportContainsHeader, fs, true);
+            }
         }
 
         public static string ExportAsXlsx(string fileName, IList<LocalizationItem> items)
         {
             PicoXLSX.Workbook wb = new Workbook(fileName, "resources");
             wb.CurrentWorksheet.CurrentCellDirection = Worksheet.CellDirection.ColumnToColumn;
-            Style s = Style.BasicStyles.Bold;
-            wb.WS.Value("Stream name", s);
-            wb.WS.Value("Resource key", s);
-            wb.WS.Value("Resource Category", s);
-            wb.WS.Value("Can be read", s);
-            wb.WS.Value("Can be modified", s);
-            wb.WS.Value("Comment", s);
-            wb.WS.Value("Value", s);
-            wb.WS.Down();
+            if (Properties.Settings.Default.ExportContainsHeader == true)
+            {
+                Style s = Style.BasicStyles.Bold;
+                wb.WS.Value("Stream name", s);
+                wb.WS.Value("Resource key", s);
+                wb.WS.Value("Resource Category", s);
+                wb.WS.Value("Can be read", s);
+                wb.WS.Value("Can be modified", s);
+                wb.WS.Value("Comment", s);
+                wb.WS.Value("Value", s);
+                wb.WS.Down();
+            }
             foreach (LocalizationItem item in items)
             {
                 wb.WS.Value(item.StreamName);
@@ -140,6 +165,16 @@ namespace locbamlUI
 
         public static IList<LocalizationItem> ImportFromCsv(string fileName, out string errors)
         {
+            CsvOptions options = new CsvOptions();
+            options.Separator = Properties.Settings.Default.ImportCsvDelimiter[0];
+            if (Properties.Settings.Default.ImportContainsHeader == true)
+            {
+                options.HeaderMode = HeaderMode.HeaderPresent;
+            }
+            else
+            {
+                options.HeaderMode = HeaderMode.HeaderAbsent;
+            }
             errors = null;
             try
             {
@@ -150,7 +185,6 @@ namespace locbamlUI
                     rawText = tr.ReadToEnd();
                     tr.Close();
                 }
-                CsvOptions options = new CsvOptions(){HeaderMode = HeaderMode.HeaderPresent, Separator = ','};
                 IEnumerable<ICsvLine> lines = CsvReader.ReadFromText(rawText, options);
                 List<LocalizationItem> items = new List<LocalizationItem>();
                 LocalizationItem item;
@@ -233,6 +267,15 @@ namespace locbamlUI
 
         public static IList<LocalizationItem> ImportFromXlsx(string fileName, out string errors)
         {
+            int minRowCount;
+            if (Properties.Settings.Default.ImportContainsHeader == true)
+            {
+                minRowCount = 2;
+            }
+            else
+            {
+                minRowCount = 1;
+            }
             errors = null;
             FemtoXLSX.XlsxReader reader = new XlsxReader(fileName);
             try
@@ -258,16 +301,23 @@ namespace locbamlUI
             }
 
             int rowCount = worksheet.GetRowCount();
-            if (rowCount < 2)
+            if (rowCount < minRowCount)
             {
-                errors = "No data found. The worksheet must have at least 2 rows (header + 1 data row).";
+                if (minRowCount == 1)
+                {
+                    errors = "No data found. The worksheet must have at least 1 data row (no header expected).";
+                }
+                else
+                {
+                    errors = "No data found. The worksheet must have at least 2 rows (header + 1 data row).";
+                }
                 return null;
             }
             Dictionary<string, Cell> data = worksheet.Data;
             List<LocalizationItem> items = new List<LocalizationItem>();
             LocalizationItem item;
             List<Cell> row;
-            for (int i = 1; i < rowCount; i++) // Start with row 2( index 1)
+            for (int i = minRowCount - 1; i < rowCount; i++) // Start with row 2( index 1) or 1 (index 0)
             {
                 row = worksheet.GetRow(i);
                 if (row.Count < 7)

@@ -121,18 +121,22 @@ namespace BamlLocalization
 
         }
 
+        public static void GenerateBamlResourcesFromStream(LocBamlOptions options, Stream stream)
+        {
+            using (ResourceTextReader reader = new ResourceTextReader(options.TranslationFileType, stream))
+            {
+                TranslationDictionariesReader dictionaries = new TranslationDictionariesReader(reader);
+                ResourceGenerator.Generate(options, dictionaries);
+            }   
+        }
 
         /// <summary>
-        /// Genereate localized baml 
+        /// Generate localized baml 
         /// </summary>        
         private static void GenerateBamlResources(LocBamlOptions options)
         {   
             Stream input = File.OpenRead(options.Translations);
-            using (ResourceTextReader reader = new ResourceTextReader(options.TranslationFileType, input))
-            {   
-                TranslationDictionariesReader dictionaries = new TranslationDictionariesReader(reader);                                                               
-                ResourceGenerator.Generate(options, dictionaries);
-            }         
+            GenerateBamlResourcesFromStream(options, input);     
         }
             
         /// <summary>

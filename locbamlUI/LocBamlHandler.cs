@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -17,8 +18,9 @@ namespace locbamlUI
         }
 
         public ViewModel CurrentViewModel { get; set; }
-        public string Path { get; private set; }  
+        public string Path { get; private set; }
 
+        public CultureInfo CurrentCultureInfo { get; private set; }
 
         public LocBamlHandler(ViewModel model)
         {
@@ -29,6 +31,12 @@ namespace locbamlUI
         {
             this.Path = path;
             CurrentAssembly = path;
+        }
+
+        public LocBamlHandler(string path, ViewModel model, CultureInfo cultureInfo)
+            : this(path, model)
+        {
+            this.CurrentCultureInfo = cultureInfo;
         }
 
 
@@ -67,6 +75,23 @@ namespace locbamlUI
             SetTable((MemoryStream)stream, '\t');
             return true;
         }
+
+
+        public bool Save()
+        {
+            FileInfo fi = new FileInfo(this.Path);
+            LocBamlOptions options = new LocBamlOptions();
+            options.Output = fi.DirectoryName;
+            options.Translations = fi.Name;
+            options.ToGenerate = true;
+            options.CultureInfo = this.CurrentCultureInfo;
+            options.ToParseAsStream = true; // Get input by stream
+            MemoryStream ms = new MemoryStream();
+            string errors = LocalizationItem.ExportAsStream(CurrentViewModel.LocalizationList, false, ms, false);
+            errors = options.CheckAndSetDefault();
+            LocBaml.GenerateBamlResourcesFromStream(options, ms);
+        }
+        
 
         private void SetTable(MemoryStream input, char cellDelimeiter)
         {

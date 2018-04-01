@@ -8,8 +8,6 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
     </Window.Resources>
     <Grid>
-        <Button x:Name="loadDLLButton" Content="Load Resource" Margin="0,37,10,0" VerticalAlignment="Top" Width="98" HorizontalAlignment="Right" Click="loadDLLButton_Click"/>
-        <TextBox x:Name="dllPathField" Height="23" Margin="10,36,113,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnlyCaretVisible="True" IsReadOnly="True"/>
         <DataGrid  ItemsSource="{Binding Path=LocalizationList}" 
                    dgx:DataGridFilter.IsAutoFilterEnabled="True"
                    x:Name="bamlDataGrid" 
@@ -61,7 +59,7 @@
         <Menu Height="30" VerticalAlignment="Top">
             <MenuItem Header="File">
                 <MenuItem x:Name="loadMenuItem" Header="Load Resources" Click="loadMenuItem_Click"/>
-                <MenuItem Header="Save Resources as..." IsEnabled="{Binding Path=Loaded}"/>
+                <MenuItem x:Name="saveMenuItem" Header="Save Resources as..." IsEnabled="{Binding Path=Loaded}" Click="saveMenuItem_Click"/>
                 <Separator/>
                 <MenuItem x:Name="importResourcesMenuItem" Header="Import Resources" Click="importMenuItem_Click"/>
                 <MenuItem x:Name="exportMenuItem" Header="Export Resources" Click="exportMenuItem_Click" IsEnabled="{Binding Path=Loaded}"/>
@@ -84,6 +82,10 @@
         <StatusBar Height="30" Margin="0" VerticalAlignment="Bottom" VerticalContentAlignment="Center">
             <Label Content="{Binding Path=Status}" Padding="10,1,5,1" VerticalContentAlignment="Stretch"/>
         </StatusBar>
+        <Label Content="Culture Info:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.421,0.308" Width="76"/>
+        <ComboBox x:Name="cultureInfoBox" SelectedIndex="{Binding Path=CultureInfoIndex}" ItemsSource="{Binding Path=CultureInfoList}" HorizontalAlignment="Left" Margin="91,35,0,0" VerticalAlignment="Top" Width="108" SelectionChanged="cultureInfoBox_SelectionChanged"/>
+        <Label Content="Assembly:" HorizontalAlignment="Left" Margin="214,35,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.421,0.308" Width="69"/>
+        <TextBox x:Name="assemblyField" IsEnabled="{Binding Path=Loaded}" Text="{Binding Path=Assembly}" Height="23" Margin="288,37,10,0" TextWrapping="Wrap" VerticalAlignment="Top" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
 
     </Grid>
 </Window>

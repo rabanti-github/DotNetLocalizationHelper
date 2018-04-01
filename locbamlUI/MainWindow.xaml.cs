@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
@@ -101,7 +102,6 @@ namespace locbamlUI
             bool? result = ofd.ShowDialog();
             if (result == true)
             {
-                this.dllPathField.Text = ofd.FileName;
                 this.handler = new LocBamlHandler(ofd.FileName, CurrentModel);
                 //this.DataContext = this.handler.CurrentViewModel;
                 bool state = this.handler.Load();
@@ -166,12 +166,15 @@ namespace locbamlUI
 
                 if (error != null)
                 {
+                    CurrentModel.ClearLocalizationList();
                     this.CurrentModel.Status = error;
+                    CurrentModel.Loaded = false;
                     MessageBox.Show("The resources could not be imported:\n" + error, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     CurrentModel.SetLocalizationList(list);
+                    CurrentModel.Loaded = true;
                     this.CurrentModel.Status = "The resources were imported successfully";
                     MessageBox.Show("The resources were imported successfully", "Import", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -232,6 +235,31 @@ namespace locbamlUI
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void saveMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Title = "Save resources as...";
+            sfd.DefaultExt = "dll";
+            sfd.Filter = "Dynamic link libraries|*.dll|Resource files|*.resources|BAML files|*.baml";
+            bool? result = sfd.ShowDialog();
+            if (result == true)
+            {
+                FileInfo fi = new FileInfo(sfd.FileName);
+                this.handler = new LocBamlHandler(sfd.FileName, CurrentModel, (CultureInfo)this.cultureInfoBox.SelectedItem);
+                //this.DataContext = this.handler.CurrentViewModel;
+                bool state = this.handler.Save();
+            }
+        }
+
+        private void cultureInfoBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (CurrentModel.HandleCultureInfo() == true)
+            {
+                bamlDataGrid.Items.Refresh();  // Force refresh
+            }
+           
         }
 
     }

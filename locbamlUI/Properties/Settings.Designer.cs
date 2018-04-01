@@ -118,5 +118,17 @@ namespace locbamlUI.Properties {
                 this["SetColumnsReadOnly"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CultureInfoAutoHandling {
+            get {
+                return ((bool)(this["CultureInfoAutoHandling"]));
+            }
+            set {
+                this["CultureInfoAutoHandling"] = value;
+            }
+        }
     }
 }
