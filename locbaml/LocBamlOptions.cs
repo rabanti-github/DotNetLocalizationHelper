@@ -16,6 +16,7 @@ namespace BamlLocalization
         public bool ToParse { get; set; }
         public bool ToParseAsStream { get; set; }
         public bool ToGenerate { get; set; }
+        public bool ToGenerateWithStream { get; set; }
         public bool HasNoLogo { get; set; }
         public bool IsVerbose { get; set; }
         public FileType TranslationFileType { get; set; }
@@ -75,7 +76,7 @@ namespace BamlLocalization
                 }                                
             }
             
-            if (ToGenerate)
+            if (ToGenerate || ToGenerateWithStream)
             {
                 // Rule #3: before generation, we must have Culture string
                 if (CultureInfo == null &&  InputType != FileType.BAML)
@@ -85,12 +86,12 @@ namespace BamlLocalization
                 }
                 
                 // Rule #4: before generation, we must have translation file
-                if (string.IsNullOrEmpty(Translations))
+                if (string.IsNullOrEmpty(Translations) && ToGenerateWithStream == false)
                 {
 
                     return StringLoader.Get("TranslationNeeded");
                 }
-                else
+                else if (ToGenerateWithStream == false)
                 {
                     string extension = Path.GetExtension(Translations);
 

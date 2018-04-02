@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 
 namespace locbamlUI
@@ -239,18 +240,39 @@ namespace locbamlUI
 
         private void saveMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Title = "Save resources as...";
-            sfd.DefaultExt = "dll";
-            sfd.Filter = "Dynamic link libraries|*.dll|Resource files|*.resources|BAML files|*.baml";
-            bool? result = sfd.ShowDialog();
-            if (result == true)
+
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Select original resource library to translate";
+            ofd.DefaultExt = "dll";
+            ofd.Filter = "Dynamic link libraries|*.dll|Executables|*.exe|Resource files|*.resources|BAML files|*.baml|All files|*.*";
+            ofd.Multiselect = false;
+            bool? result = ofd.ShowDialog();
+            if (result != true) { return; }
+
+            FileInfo fi1 = new FileInfo(ofd.FileName);
+
+            CommonOpenFileDialog ofd2 = new CommonOpenFileDialog();
+            ofd2.Multiselect = false;
+            ofd2.IsFolderPicker = true;
+            ofd2.Title = "Save new resource library in folder...";
+            CommonFileDialogResult result2 = ofd2.ShowDialog();
+            if (result2 != CommonFileDialogResult.Ok) { return; }
+
+            DirectoryInfo di1 = new DirectoryInfo(ofd2.FileName);
+
+            if (fi1.Directory.FullName.Equals(di1.FullName))
             {
-                FileInfo fi = new FileInfo(sfd.FileName);
-                this.handler = new LocBamlHandler(sfd.FileName, CurrentModel, (CultureInfo)this.cultureInfoBox.SelectedItem);
-                //this.DataContext = this.handler.CurrentViewModel;
-                bool state = this.handler.Save();
+                this.CurrentModel.Status = "Save aborted";
+                MessageBox.Show("The location of the existing resource library and the new one cannot be the same folder since both files have the same name.\nUse for instance a sub folder like \"" + cultureInfoBox.SelectedItem.ToString() + "\"", "Save aborted", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
+                this.handler = new LocBamlHandler(ofd.FileName, ofd2.FileName, CurrentModel, (CultureInfo)this.cultureInfoBox.SelectedItem);
+                bool state = this.handler.Save();
+                if (state == true)
+                {
+                    this.CurrentModel.Status = "The resources were saved successfully as " + this.handler.CurrentCultureInfo.ToString();
+                    MessageBox.Show("The resources were imported saved with the culture info " + this.handler.CurrentCultureInfo.ToString(), "Save", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
         }
 
         private void cultureInfoBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

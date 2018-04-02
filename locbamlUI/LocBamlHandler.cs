@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -18,7 +19,9 @@ namespace locbamlUI
         }
 
         public ViewModel CurrentViewModel { get; set; }
-        public string Path { get; private set; }
+        public string InputPath { get; private set; }
+
+        public string OutputPath { get; set; }
 
         public CultureInfo CurrentCultureInfo { get; private set; }
 
@@ -27,22 +30,22 @@ namespace locbamlUI
             this.CurrentViewModel = model;
         }
 
-        public LocBamlHandler(string path, ViewModel model) : this(model)
+        public LocBamlHandler(string inputPath, ViewModel model) : this(model)
         {
-            this.Path = path;
-            CurrentAssembly = path;
+            this.InputPath = inputPath;
+            CurrentAssembly = inputPath;
         }
 
-        public LocBamlHandler(string path, ViewModel model, CultureInfo cultureInfo)
-            : this(path, model)
+        public LocBamlHandler(string inputPath, string outputPath, ViewModel model, CultureInfo cultureInfo) : this(inputPath, model)
         {
+            this.OutputPath = outputPath;
             this.CurrentCultureInfo = cultureInfo;
         }
 
 
         public void Load(string path)
         {
-            this.Path = path;
+            this.InputPath = path;
             CurrentAssembly = path;
             Load();
         }
@@ -50,7 +53,7 @@ namespace locbamlUI
         public bool Load()
         {
             LocBamlOptions options = new LocBamlOptions();
-            options.Input = this.Path;
+            options.Input = this.InputPath;
             options.ToParseAsStream = true;
             options.Output = "res.txt"; // Transient
             string errors = options.CheckAndSetDefault();
@@ -79,23 +82,38 @@ namespace locbamlUI
 
         public bool Save()
         {
-            FileInfo fi = new FileInfo(this.Path);
+            //FileInfo fi = new FileInfo(this.InputPath);
             LocBamlOptions options = new LocBamlOptions();
-            options.Output = fi.DirectoryName;
-            options.Translations = fi.Name;
-            options.ToGenerate = true;
             options.CultureInfo = this.CurrentCultureInfo;
-            options.ToParseAsStream = true; // Get input by stream
+            options.Input = this.InputPath;
+            options.Output = this.OutputPath;
+            options.ToGenerate = true;
+            options.TranslationFileType = FileType.CSV;
+            options.ToGenerateWithStream = true; // Get input by stream
             MemoryStream ms = new MemoryStream();
             string errors = LocalizationItem.ExportAsStream(CurrentViewModel.LocalizationList, false, ms, false);
+            if (string.IsNullOrEmpty(errors) == false)
+            {
+                CurrentViewModel.Status = errors;
+                MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             errors = options.CheckAndSetDefault();
+            if (string.IsNullOrEmpty(errors) == false)
+            {
+                CurrentViewModel.Status = errors;
+                MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             LocBaml.GenerateBamlResourcesFromStream(options, ms);
+            return true;
         }
         
 
         private void SetTable(MemoryStream input, char cellDelimeiter)
         {
-            this.CurrentViewModel.LocalizationList.Clear();
+            //this.CurrentViewModel.LocalizationList.Clear();
+            List<LocalizationItem> items = new List<LocalizationItem>();
             LocalizationItem item;
             string text = "";
             using (StreamReader sr = new StreamReader(input))
@@ -152,9 +170,11 @@ namespace locbamlUI
                             break;
                     }
                 }
-                this.CurrentViewModel.LocalizationList.Add(item);
+                //this.CurrentViewModel.LocalizationList.Add(item);
+                items.Add(item);
             }
-            this.CurrentViewModel.UpdateList();
+            //this.CurrentViewModel.UpdateList();
+            this.CurrentViewModel.SetLocalizationList(items);
             this.CurrentViewModel.Status = "Resource was loaded";
         }
 

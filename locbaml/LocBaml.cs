@@ -30,7 +30,7 @@ namespace BamlLocalization
         [System.STAThread()]
         public static int Main(string[] args)
         {
-			//Debugger.Break();
+            //Debugger.Break();
         	
             LocBamlOptions options;
             string errorMessage;
