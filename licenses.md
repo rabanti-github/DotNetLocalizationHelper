@@ -152,8 +152,11 @@ Copyright (c) Microsoft Corporation, 2013.
 ## Windows API Code Pack - Core/Shell (https://github.com/aybe/Windows-API-Code-Pack-1.1)
 
 License: Custom License
+
 MICROSOFT SOFTWARE LICENSE TERMS
+
 MICROSOFT WINDOWS API CODE PACK FOR MICROSOFT .NET FRAMEWORK
+
 ---
 These license terms are an agreement between Microsoft Corporation (or based on where you live, one of its affiliates) and you. Please read them. They apply to the software named above, which includes the media on which you received it, if any. The terms also apply to any Microsoft
 *  updates,
@@ -196,11 +199,11 @@ This limitation applies to
 *  claims for breach of contract, breach of warranty, guarantee or condition, strict liability, negligence, or other tort to the extent permitted by applicable law.
 It also applies even if Microsoft knew or should have known about the possibility of the damages. The above limitation or exclusion may not apply to you because your country may not allow the exclusion or limitation of incidental, consequential or other damages.
 Please note: As this software is distributed in Quebec, Canada, some of the clauses in this agreement are provided below in French.
-Remarque : Ce logiciel étant distribué au Québec, Canada, certaines des clauses dans ce contrat sont fournies ci-dessous en français.
-EXONÉRATION DE GARANTIE. Le logiciel visé par une licence est offert « tel quel ». Toute utilisation de ce logiciel est à votre seule risque et péril. Microsoft n'accorde aucune autre garantie expresse. Vous pouvez bénéficier de droits additionnels en vertu du droit local sur la protection des consommateurs, que ce contrat ne peut modifier. La ou elles sont permises par le droit locale, les garanties implicites de qualité marchande, d'adéquation à un usage particulier et d'absence de contrefaçon sont exclues.
-LIMITATION DES DOMMAGES-INTÉRÊTS ET EXCLUSION DE RESPONSABILITÉ POUR LES DOMMAGES. Vous pouvez obtenir de Microsoft et de ses fournisseurs une indemnisation en cas de dommages directs uniquement à hauteur de 5,00 $ US. Vous ne pouvez prétendre à aucune indemnisation pour les autres dommages, y compris les dommages spéciaux, indirects ou accessoires et pertes de bénéfices.
+Remarque : Ce logiciel Ã©tant distribuÃ© au QuÃ©bec, Canada, certaines des clauses dans ce contrat sont fournies ci-dessous en franÃ§ais.
+EXONÃ‰RATION DE GARANTIE. Le logiciel visÃ© par une licence est offert Â« tel quel Â». Toute utilisation de ce logiciel est Ã  votre seule risque et pÃ©ril. Microsoft n'accorde aucune autre garantie expresse. Vous pouvez bÃ©nÃ©ficier de droits additionnels en vertu du droit local sur la protection des consommateurs, que ce contrat ne peut modifier. La ou elles sont permises par le droit locale, les garanties implicites de qualitÃ© marchande, d'adÃ©quation Ã  un usage particulier et d'absence de contrefaÃ§on sont exclues.
+LIMITATION DES DOMMAGES-INTÃ‰RÃŠTS ET EXCLUSION DE RESPONSABILITÃ‰ POUR LES DOMMAGES. Vous pouvez obtenir de Microsoft et de ses fournisseurs une indemnisation en cas de dommages directs uniquement Ã  hauteur de 5,00 $ US. Vous ne pouvez prÃ©tendre Ã  aucune indemnisation pour les autres dommages, y compris les dommages spÃ©ciaux, indirects ou accessoires et pertes de bÃ©nÃ©fices.
 Cette limitation concerne :
-*  tout ce qui est relié au logiciel, aux services ou au contenu (y compris le code) figurant sur des sites Internet tiers ou dans des programmes tiers ; et
-*  les réclamations au titre de violation de contrat ou de garantie, ou au titre de responsabilité stricte, de négligence ou d'une autre faute dans la limite autorisée par la loi en vigueur.
-Elle s'applique également, même si Microsoft connaissait ou devrait connaître l'éventualité d'un tel dommage. Si votre pays n'autorise pas l'exclusion ou la limitation de responsabilité pour les dommages indirects, accessoires ou de quelque nature que ce soit, il se peut que la limitation ou l'exclusion ci-dessus ne s'appliquera pas à votre égard.
-EFFET JURIDIQUE. Le présent contrat décrit certains droits juridiques. Vous pourriez avoir d'autres droits prévus par les lois de votre pays. Le présent contrat ne modifie pas les droits que vous confèrent les lois de votre pays si celles-ci ne le permettent pas.
+*  tout ce qui est reliÃ© au logiciel, aux services ou au contenu (y compris le code) figurant sur des sites Internet tiers ou dans des programmes tiers ; et
+*  les rÃ©clamations au titre de violation de contrat ou de garantie, ou au titre de responsabilitÃ© stricte, de nÃ©gligence ou d'une autre faute dans la limite autorisÃ©e par la loi en vigueur.
+Elle s'applique Ã©galement, mÃªme si Microsoft connaissait ou devrait connaÃ®tre l'Ã©ventualitÃ© d'un tel dommage. Si votre pays n'autorise pas l'exclusion ou la limitation de responsabilitÃ© pour les dommages indirects, accessoires ou de quelque nature que ce soit, il se peut que la limitation ou l'exclusion ci-dessus ne s'appliquera pas Ã  votre Ã©gard.
+EFFET JURIDIQUE. Le prÃ©sent contrat dÃ©crit certains droits juridiques. Vous pourriez avoir d'autres droits prÃ©vus par les lois de votre pays. Le prÃ©sent contrat ne modifie pas les droits que vous confÃ¨rent les lois de votre pays si celles-ci ne le permettent pas.
