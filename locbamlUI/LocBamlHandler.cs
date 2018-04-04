@@ -105,7 +105,13 @@ namespace locbamlUI
                 MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
                 return false;
             }
-            LocBaml.GenerateBamlResourcesFromStream(options, ms);
+            errors = LocBaml.GenerateBamlResourcesFromStream(options, ms);
+            if (string.IsNullOrEmpty(errors) == false)
+            {
+                CurrentViewModel.Status = errors;
+                MessageBox.Show(errors, "Error", MessageBoxButton.OK, MessageBoxImage.Information);
+                return false;
+            }
             return true;
         }
         

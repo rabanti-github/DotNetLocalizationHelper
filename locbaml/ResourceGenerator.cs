@@ -29,7 +29,7 @@ namespace BamlLocalization
         /// </summary>
         /// <param name="options">LocBaml options</param>
         /// <param name="dictionaries">the translation dictionaries</param>
-        internal static void Generate(LocBamlOptions options, TranslationDictionariesReader dictionaries)
+        internal static string Generate(LocBamlOptions options, TranslationDictionariesReader dictionaries)
         {   
             // base on the input, we generate differently            
             switch(options.InputType)
@@ -57,7 +57,11 @@ namespace BamlLocalization
                             if (dictionary == null)                            
                                 dictionary = new BamlLocalizationDictionary();
                             
-                            GenerateBamlStream(input, output, dictionary, options);
+                            string status = GenerateBamlStream(input, output, dictionary, options);
+                            if (status != null)
+                            {
+                                return status;
+                            }
                         }                               
                     }
 
@@ -79,7 +83,7 @@ namespace BamlLocalization
                             // create a writer on the output;
                             IResourceWriter writer = new ResourceWriter(output);
 
-                            GenerateResourceStream(
+                            string status = GenerateResourceStream(
                                 options,         // options
                                 options.Input,   // resources name
                                 reader,          // resource reader
@@ -87,7 +91,10 @@ namespace BamlLocalization
                                 dictionaries);   // translations
 
                             reader.Close();
-                            
+                            if (status != null)
+                            {
+                                return status;
+                            }
                             // now generate and close
                             writer.Generate();
                             writer.Close();
@@ -100,19 +107,26 @@ namespace BamlLocalization
 		case FileType.EXE:
                 case FileType.DLL:
                 {   
-                    GenerateAssembly(options, dictionaries);                    
+                    string status = GenerateAssembly(options, dictionaries);
+                    if (status != null)
+                    {
+                        return status;
+                    }
                     break;
                 }
                 default:
                 {
-                    Debug.Assert(false, "Can't generate to this type");       
+                    Debug.Assert(false, "Can't generate to this type");
+                    return "Can't generate to a resource of the type EXE";
                     break;
                 }
-            }            
+            }
+
+            return null;
         }
 
 
-        private static void GenerateBamlStream(Stream input, Stream output, BamlLocalizationDictionary dictionary, LocBamlOptions options)
+        private static string GenerateBamlStream(Stream input, Stream output, BamlLocalizationDictionary dictionary, LocBamlOptions options)
         {
             string commentFile = Path.ChangeExtension(options.Input, "loc");
             TextReader commentStream = null;           
@@ -154,6 +168,10 @@ namespace BamlLocalization
                 // update baml
                 mgr.UpdateBaml(output, translations);
             }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
             finally
             {
                 if (commentStream != null)
@@ -161,9 +179,10 @@ namespace BamlLocalization
                     commentStream.Close();
                 }
             }
+            return null;
         }
 
-        private static void GenerateResourceStream(
+        private static string GenerateResourceStream(
                 LocBamlOptions options,                     // options from the command line
                 string resourceName,                        // the name of the .resources file
                 IResourceReader reader,                     // the reader for the .resources
@@ -194,13 +213,19 @@ namespace BamlLocalization
                         targetStream = new MemoryStream();
                         
                         // generate into a new Baml stream
-                        GenerateBamlStream(
+                        string status = GenerateBamlStream(
                             (Stream) entry.Value,
                             targetStream,
                             localizations,
                             options
                         );
+                        if (status != null)
+                        {
+                            options.WriteLine(status);
+                            return status;
+                        }
                     }
+
                     options.WriteLine(StringLoader.Get("Done"));
 
 		    // sets the generated object to be the generated baml stream
@@ -240,6 +265,8 @@ namespace BamlLocalization
 			writer.AddResource(name, resourceValue);
                 }
             }
+
+            return null;
         }
 
         private static void GenerateStandaloneResource(string fullPathName, Stream resourceStream)
@@ -263,7 +290,7 @@ namespace BamlLocalization
         // implementation. in the future, maybe they should 
         // share the same code
         //--------------------------------------------------
-        private static void GenerateAssembly(LocBamlOptions options, TranslationDictionariesReader dictionaries)
+        private static string GenerateAssembly(LocBamlOptions options, TranslationDictionariesReader dictionaries)
         {
             // there are many names to be used when generating an assembly
             string sourceAssemblyFullName   = options.Input;                // source assembly full path 
@@ -351,7 +378,11 @@ namespace BamlLocalization
                     IResourceReader reader = new ResourceReader(resourceStream);
 
                     // generate the resources
-                    GenerateResourceStream(options, resourceName, reader, writer, dictionaries);
+                    string status = GenerateResourceStream(options, resourceName, reader, writer, dictionaries);
+                    if (status != null)
+                    {
+                        return status;
+                    }
 
                     // we don't call writer.Generate() or writer.Close() here 
                     // because the AssemblyBuilder will call them when we call Save() on it.
@@ -407,6 +438,7 @@ namespace BamlLocalization
             // at the end, generate the assembly
             targetAssemblyBuilder.Save(outputAssemblyLocalName);
             options.WriteLine(StringLoader.Get("DoneGeneratingAssembly"));
+            return null;
         }
 
 

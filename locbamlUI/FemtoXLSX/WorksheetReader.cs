@@ -35,6 +35,30 @@ namespace locbamlUI.FemtoXLSX
             return false;
         }
 
+        public bool RowHasColumns(ref List<Cell> cells, int[] columnNumbers)
+        {
+            if (columnNumbers == null || cells == null) { return false; }
+            int len = columnNumbers.Length;
+            int len2 = cells.Count;
+            int j;
+            bool match;
+            if (len < 1 || len2 < 1){ return false; }
+            for (int i = 0; i < len; i++)
+            {
+                match = false;
+                for (j = 0; j < len2; j++)
+                {
+                    if (cells[j].ColumnNumber == columnNumbers[i])
+                    {
+                        match = true;
+                        break;
+                    }
+                }
+                if (match == false) { return false; }
+            }
+            return true;
+        }
+
         public int GetRowCount()
         {
             int count = -1;

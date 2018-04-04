@@ -50,7 +50,17 @@ namespace locbamlUI
 
         public string Comment
         {
-            get { return comment; }
+            get
+            {
+                if (comment == null)
+                {
+                    return string.Empty;
+                }
+                else
+                {
+                    return comment;                     
+                }
+            }
             set { comment = value; }
         }
 
@@ -317,12 +327,13 @@ namespace locbamlUI
             List<LocalizationItem> items = new List<LocalizationItem>();
             LocalizationItem item;
             List<Cell> row;
+            int[] mandatory = new int[]{0, 1, 2, 3, 4, 6};
             for (int i = minRowCount - 1; i < rowCount; i++) // Start with row 2( index 1) or 1 (index 0)
             {
                 row = worksheet.GetRow(i);
-                if (row.Count < 7)
+                if (worksheet.RowHasColumns(ref row, mandatory) == false)
                 {
-                    errors = "Row " + (i + 1).ToString() + " has too few values. 7 columns are expected.";
+                    errors = "Row " + (i + 1).ToString() + " has too few values. At least 6 columns are expected.";
                     return null;
                 }
                 item = new LocalizationItem();
